@@ -1,6 +1,6 @@
 
 all: MLE
-	g++ main.cpp MLE.o -o GSDEstimator
+	g++ -Wall -Werror -O3 main.cpp MLE.o -o GSDEstimator
 
 MLE: MLE.cpp
-	g++ -c MLE.cpp
+	g++ -Wall -Werror -O3 -c MLE.cpp
