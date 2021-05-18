@@ -1,2 +1,3 @@
 *.o
-GSDEstimator
+GSDEstimator*
+output.csv
