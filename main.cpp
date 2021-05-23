@@ -1,5 +1,6 @@
 #include <iostream>
 #include <chrono>
+#include <cstdlib>
 #include <fstream>
 #include <memory>
 #include <vector>
@@ -8,15 +9,20 @@
 constexpr size_t MAX_SOURCE_SIZE = 100000;
 constexpr size_t DATA_SIZE = 10;
 
-std::vector<GridNode> load_grid() {
+std::vector<GridNode> load_grid(const char* filename) {
   std::vector<GridNode> grid{};
 
   std::ifstream file;
-  file.open("gsd_prob_grid.bin", std::ios::binary);
+  file.open(filename, std::ios::binary);
+  if (not file.good()) {
+    std::cout << "Grid file " << filename << " does not exist!" << std::endl;
+    exit(1);
+  }
 
   GridNode tmp;
   while(file) {
-    file.read((char*)&tmp, GRIDNODE_SIZE);
+    constexpr size_t GRIDELEMENT_SIZE = sizeof(double) * 7;
+    file.read((char*)&tmp, GRIDELEMENT_SIZE);
     if( file.gcount() == 0 )
       break;
     grid.push_back(tmp);
@@ -25,11 +31,15 @@ std::vector<GridNode> load_grid() {
   return std::move(grid);
 }
 
-std::vector<Sample> load_samples() {
+std::vector<Sample> load_samples(const char* filename) {
   std::vector<Sample> samples;
 
   std::ifstream file;
-  file.open("samples.txt");
+  file.open(filename);
+  if (not file.good()) {
+    std::cout << "File " << filename << " does not exist!" << std::endl;
+    exit(1);
+  }
 
   Sample tmp;
   while( file ) {
@@ -46,10 +56,28 @@ std::vector<Sample> load_samples() {
   return std::move(samples);
 }
 
-int main() {
+int main(int argc, char** argv) {
 
-  auto grid = load_grid();
-  auto samples = load_samples();
+  if (argc < 2) {
+    std::cout << "Usage: " << argv[0] << " <samples_file> [output_file] [grid_file]" << std::endl;
+    std::cout << "\tsamples_file: name of input file containg samples for estimation" << std::endl;
+    std::cout << "\toutput_file: name of csv file containing results" << std::endl;
+    std::cout << "\tgrid_file: name of file with psi, rho and probabilities on which to base the estimation" << std::endl;
+    return 1;
+  }
+
+  const char* samples_filename = argv[1];
+  const char* output_filename = "output.csv";
+  const char* grid_filename = "gsd_prob_grid.bin";
+  if (argc > 2) {
+    output_filename = argv[2];
+  }
+  if (argc > 3) {
+    grid_filename = argv[3];
+  }
+
+  auto samples = load_samples(samples_filename);
+  auto grid = load_grid(grid_filename);
   std::vector<float> results{};
   std::vector<float> max_likelihood(samples.size(), -std::numeric_limits<float>::infinity());
   std::vector<float> max_likelihood_idx(samples.size());
@@ -97,7 +125,7 @@ int main() {
   std::cout << "Whole process took: " << duration << "ms => AVG: " << duration / (float)samples.size() << "ms per sample" << std::endl;
 
   std::ofstream file;
-  file.open("output.csv");
+  file.open(output_filename);
 
   std::cout << "Writing to file..." << std::endl;
 

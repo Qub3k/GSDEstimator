@@ -24,5 +24,5 @@ for (psi, ro), row in dataframe.iterrows():
         out_array.append(row[idx])
 
 out_file = open(filename.split(".")[0] + ".bin", "wb")
-wrote = out_file.write(struct.pack('f'*len(out_array), *out_array))
+wrote = out_file.write(struct.pack('d'*len(out_array), *out_array))
 out_file.close()

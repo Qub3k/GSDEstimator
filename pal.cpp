@@ -2,10 +2,11 @@
 #include "pal.hpp"
 
 const char* source_code = " \
+#pragma OPENCL EXTENSION cl_khr_fp64 : enable \n\
 typedef struct __attribute__ ((packed)) { \
-  float psi; \
-  float rho; \
-  float grades[8]; \
+  double psi; \
+  double rho; \
+  double grades[8]; \
 } grid_node; \
  \
 __kernel void \
@@ -16,12 +17,13 @@ estimate( \
          __global float *output) \
 { \
   size_t id = get_global_id(0); \
-  float8 probs = log(vload8(0, node[id].grades)); \
+  double4 probs = log(vload4(0, node[id].grades)); \
   for (int i = 0; i < n_samples; ++i) { \
-    int8 samples = vload8(i, samples_ptr); \
-    float8 res = probs * convert_float8(samples); \
-    float sum = res.s0 + res.s1 + res.s2 + res.s3 + res.s4; \
-    output[n_samples*id + i] = sum; \
+    double sum = 0; \
+    for (int j = 0; j < 5; ++j) { \
+      sum += log(node[id].grades[j]) * samples_ptr[8*i+j]; \
+    } \
+    output[n_samples*id + i] = convert_float(sum); \
   } \
 } \
 ";

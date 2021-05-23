@@ -6,13 +6,12 @@ extern "C" {
   #include <CL/cl.h>
 }
 
-constexpr size_t GRIDNODE_SIZE = sizeof(float) * 7;
 struct GridNode {
-  float psi;
-  float rho;
-  float grades[5];
+  double psi;
+  double rho;
+  double grades[5];
 private:
-  float _filler[3];
+  double _filler[3];
 };
 
 struct Sample {
