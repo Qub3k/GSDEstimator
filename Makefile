@@ -1,7 +1,7 @@
 DBG=1
 
-Linux: main.cpp pal.cpp
+linux: main.cpp pal.cpp
 	g++ $^ -O3 -DDEBUG=${DBG} -g -lOpenCL -I. -o GSDEstimator
 
-Windows: main.cpp pal.cpp
+windows: main.cpp pal.cpp
 	x86_64-w64-mingw32-g++ $^ -O3 -static -DDEBUG=${DBG} -Llib/x86_64 -lOpenCL -Iinclude -I. -o GSDEstimator

@@ -59,10 +59,9 @@ std::vector<Sample> load_samples(const char* filename) {
 int main(int argc, char** argv) {
 
   if (argc < 2) {
-    std::cout << "Usage: " << argv[0] << " <samples_file> [output_file] [grid_file]" << std::endl;
+    std::cout << "Usage: " << argv[0] << " <samples_file> [output_file]" << std::endl;
     std::cout << "\tsamples_file: name of input file containg samples for estimation" << std::endl;
     std::cout << "\toutput_file: name of csv file containing results" << std::endl;
-    std::cout << "\tgrid_file: name of file with psi, rho and probabilities on which to base the estimation" << std::endl;
     return 1;
   }
 
@@ -71,9 +70,6 @@ int main(int argc, char** argv) {
   const char* grid_filename = "gsd_prob_grid.bin";
   if (argc > 2) {
     output_filename = argv[2];
-  }
-  if (argc > 3) {
-    grid_filename = argv[3];
   }
 
   auto samples = load_samples(samples_filename);
