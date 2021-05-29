@@ -20,15 +20,16 @@ std::vector<GridNode> load_grid(const char* filename) {
   }
 
   GridNode tmp;
-  while(file) {
+  while (file) {
     constexpr size_t GRIDELEMENT_SIZE = sizeof(double) * 7;
     file.read((char*)&tmp, GRIDELEMENT_SIZE);
-    if( file.gcount() == 0 )
+    if (file.gcount() == 0) {
       break;
+    }
     grid.push_back(tmp);
   }
   file.close();
-  return std::move(grid);
+  return grid;
 }
 
 std::vector<Sample> load_samples(const char* filename) {
@@ -42,7 +43,7 @@ std::vector<Sample> load_samples(const char* filename) {
   }
 
   Sample tmp;
-  while( file ) {
+  while (file) {
     file >> tmp.multiplicity[0];
     file >> tmp.multiplicity[1];
     file >> tmp.multiplicity[2];
@@ -53,15 +54,16 @@ std::vector<Sample> load_samples(const char* filename) {
   }
   file.close();
   std::cout << "Loaded: " << samples.size() << " samples\n";
-  return std::move(samples);
+  return samples;
 }
 
 int main(int argc, char** argv) {
 
   if (argc < 2) {
-    std::cout << "Usage: " << argv[0] << " <samples_file> [output_file]" << std::endl;
+    std::cout << "Usage: " << argv[0] << " <samples_file> [output_file] [grid_file]" << std::endl;
     std::cout << "\tsamples_file: name of input file containg samples for estimation" << std::endl;
     std::cout << "\toutput_file: name of csv file containing results" << std::endl;
+    std::cout << "\tgrid_file: name of file with psi, rho and probabilities on which to base the estimation" << std::endl;
     return 1;
   }
 
@@ -70,6 +72,9 @@ int main(int argc, char** argv) {
   const char* grid_filename = "gsd_prob_grid.bin";
   if (argc > 2) {
     output_filename = argv[2];
+  }
+  if (argc > 3) {
+    grid_filename = argv[3];
   }
 
   auto samples = load_samples(samples_filename);
@@ -102,8 +107,8 @@ int main(int argc, char** argv) {
 
     pal_context.read_data(results.data());
 
-    for  (int i = 0; i < grid.size(); ++i) {
-      for (int n = 0; n < loaded; ++n) {
+    for (size_t i = 0; i < grid.size(); ++i) {
+      for (size_t n = 0; n < loaded; ++n) {
         if (results[loaded*i + n] > max_likelihood[n+offset]) {
           max_likelihood[n+offset] = results[loaded*i + n];
           max_likelihood_idx[n+offset] = i;
@@ -126,7 +131,7 @@ int main(int argc, char** argv) {
   std::cout << "Writing to file..." << std::endl;
 
   file << "idx,psi,rho,log_likelihood" << std::endl;
-  for( int i = 0; i < samples.size(); ++i ) {
+  for (size_t i = 0; i < samples.size(); ++i) {
     size_t idx = max_likelihood_idx[i];
     file << i << ',' << grid[idx].psi << ',' << grid[idx].rho << ',' << max_likelihood[i] << std::endl;
   }
