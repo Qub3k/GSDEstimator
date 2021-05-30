@@ -2,15 +2,33 @@
 
 Estimator for [Generalized Score Distibution's](https://arxiv.org/abs/1909.04369) parameters using OpenCL for accelerating calculation on GPI.
 
-## Requirements
+## Build process
 
 ### Linux
 
-You need to install opencl library. The procedure will be different for every distro.\
-For ubuntu just installing `ocl-icd-opencl-dev` package should work.
+#### Requirements
+`g++` `make` `cmake`
+
+```
+mkdir build && cd build
+cmake ..
+make
+```
+
+Final executable named GSDEsimator will end up in build directory.
 
 ### Windows
-For windows everything works out of the box.
+
+#### Requirements
+- MinGW (mingw32-base-bin, mingw32-gcc-g++)
+- Cmake
+- Git
+
+```
+mkdir build && cd build
+cmake -G "MinGW Makefiles" ..
+mingw32-make
+```
 
 ## Usage
 
