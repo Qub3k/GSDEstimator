@@ -6,7 +6,7 @@ const char* source_code = " \
 typedef struct __attribute__ ((packed)) { \
   double psi; \
   double rho; \
-  double grades[8]; \
+  double grades[5]; \
 } grid_node; \
  \
 __kernel void \
@@ -17,11 +17,10 @@ estimate( \
          __global float *output) \
 { \
   size_t id = get_global_id(0); \
-  double4 probs = log(vload4(0, node[id].grades)); \
   for (int i = 0; i < n_samples; ++i) { \
     double sum = 0; \
     for (int j = 0; j < 5; ++j) { \
-      sum += log(node[id].grades[j]) * samples_ptr[8*i+j]; \
+      sum += log(node[id].grades[j] + DBL_MIN) * samples_ptr[5*i+j]; \
     } \
     output[n_samples*id + i] = convert_float(sum); \
   } \

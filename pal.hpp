@@ -10,14 +10,10 @@ struct GridNode {
   double psi;
   double rho;
   double grades[5];
-private:
-  double _filler[3];
 };
 
 struct Sample {
   int32_t multiplicity[5];
-private:
-  int32_t _filler[3];
 };
 
 class Context {

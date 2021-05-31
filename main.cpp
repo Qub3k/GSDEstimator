@@ -20,10 +20,9 @@ std::vector<GridNode> load_grid(const char* filename) {
   }
 
   GridNode tmp;
-  while(file) {
-    constexpr size_t GRIDELEMENT_SIZE = sizeof(double) * 7;
-    file.read((char*)&tmp, GRIDELEMENT_SIZE);
-    if( file.gcount() == 0 )
+  while (file) {
+    file.read((char*)&tmp, sizeof(GridNode));
+    if (file.gcount() == 0) {
       break;
     grid.push_back(tmp);
   }
@@ -48,6 +47,9 @@ std::vector<Sample> load_samples(const char* filename) {
     file >> tmp.multiplicity[2];
     file >> tmp.multiplicity[3];
     file >> tmp.multiplicity[4];
+    if (file.eof()) { // Failsafe in case of new line at the end of file
+      break;
+    }
     file.get();
     samples.push_back(tmp);
   }
@@ -89,7 +91,6 @@ int main(int argc, char** argv) {
   std::cerr << "Prepare Kernel Succeded!" << std::endl;
 
   while (remaining_samples > 0) {
-
     size_t loaded = pal_context.setup_buffers(samples.data()+offset, remaining_samples, grid.data(), grid.size());
     results.reserve(loaded*grid.size());
 
@@ -113,7 +114,6 @@ int main(int argc, char** argv) {
 
     offset += loaded;
     remaining_samples -= loaded;
-
   }
 
   auto end = std::chrono::system_clock::now();
