@@ -20,15 +20,16 @@ Final executable named GSDEsimator will end up in build directory.
 ### Windows
 
 #### Requirements
-- MinGW (mingw32-base-bin, mingw32-gcc-g++)
-- Cmake
+- Visual Studio Build Tools
 - Git
 
 ```
 mkdir build && cd build
-cmake -G "MinGW Makefiles" ..
-mingw32-make
+cmake ..
+msbuild GSDEstimator.sln
 ```
+
+Final executable named GSDEsimator will end up in build/Debug directory.
 
 ## Usage
 

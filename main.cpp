@@ -14,7 +14,7 @@ std::vector<GridNode> load_grid(const char* filename) {
 
   std::ifstream file;
   file.open(filename, std::ios::binary);
-  if (not file.good()) {
+  if (!file.good()) {
     std::cout << "Grid file " << filename << " does not exist!" << std::endl;
     exit(1);
   }
@@ -37,7 +37,7 @@ std::vector<Sample> load_samples(const char* filename) {
 
   std::ifstream file;
   file.open(filename);
-  if (not file.good()) {
+  if (!file.good()) {
     std::cout << "File " << filename << " does not exist!" << std::endl;
     exit(1);
   }
