@@ -11,11 +11,11 @@ add_executable(${TARGET_NAME} "main.cpp" "pal.cpp")
 
 if(MSVC)
   target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
-  set(CMAKE_CXX_FLAGS_DEBUG "/DEBUG")
+  set(CMAKE_CXX_FLAGS_DEBUG "/DEBUG /DDEBUG")
   set(CMAKE_CXX_FLAGS_RELEASE "/Ox")
 else()
   target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)
-  set(CMAKE_CXX_FLAGS_DEBUG "-g")
+  set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG")
   set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
 

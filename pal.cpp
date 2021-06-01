@@ -29,30 +29,42 @@ estimate( \
 
 #if DEBUG
 const char* clErrorString(cl_int err);
-#endif
 
 template<typename... Args>
 static void clCheckError(cl_int err, const char* msg, Args... args) {
   if (err != CL_SUCCESS) {
-#if DEBUG
     const char* error_string = clErrorString(err);
     fprintf(stderr, "Error: %d ( %s )\n", err, error_string);
     fprintf(stderr, msg, args...);
     fprintf(stderr, "\n");
-#endif
     std::exit(err);
   }
 }
 static void clCheckError(cl_int err, const char* msg) {
   if (err != CL_SUCCESS) {
-#if DEBUG
     const char* error_string = clErrorString(err);
     fprintf(stderr, "Error: %d ( %s )\n", err, error_string);
     fprintf(stderr, "%s\n", msg);
-#endif
     std::exit(err);
   }
 }
+#else
+struct sink { template<typename... Args> sink(Args const& ...) {} };
+template<typename... Args>
+static void clCheckError(cl_int err, const char* msg, Args... args) {
+  if (err != CL_SUCCESS) {
+    static_cast<void>(msg);
+    sink(args...);
+    std::exit(err);
+  }
+}
+static void clCheckError(cl_int err, const char* msg) {
+  if (err != CL_SUCCESS) {
+    static_cast<void>(msg);
+    std::exit(err);
+  }
+}
+#endif
 
 Context::Context() {
   this->_input = this->_samples = this->_output = NULL;
