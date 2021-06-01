@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
   auto grid = load_grid(grid_filename);
   std::vector<float> results{};
   std::vector<float> max_likelihood(samples.size(), -std::numeric_limits<float>::infinity());
-  std::vector<float> max_likelihood_idx(samples.size());
+  std::vector<size_t> max_likelihood_idx(samples.size());
 
   size_t remaining_samples = samples.size();
   size_t offset = 0;

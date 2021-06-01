@@ -13,7 +13,7 @@ __kernel void \
 estimate( \
          __global grid_node *node, \
          __global int *samples_ptr, \
-         __const int n_samples, \
+         __const long n_samples, \
          __global float *output) \
 { \
   size_t id = get_global_id(0); \
@@ -66,7 +66,7 @@ int Context::init() {
   }
 
   clGetDeviceInfo(this->_device_id, CL_DEVICE_MAX_MEM_ALLOC_SIZE, sizeof(this->_max_allocation), (void*)&this->_max_allocation, NULL);
-  this->_max_allocation *= 0.7;
+  this->_max_allocation = static_cast<size_t>(this->_max_allocation * 0.7);
 #if DEBUG
   std::cerr << "CL_DEVICE_MAX_MEM_ALLOC_SIZE: " << this->_max_allocation/1024/1024 << std::endl;
 #endif
@@ -145,10 +145,10 @@ size_t Context::setup_buffers(Sample* samples_ptr, size_t n_samples, GridNode* i
   clCheckError(err, "clEnqueueWriteBuffer on samples failed");
 
   // set the argument list for the kernel command
-  cl_int samples = this->_n_samples;
+  cl_long samples = this->_n_samples;
   clSetKernelArg(this->_kernel, 0, sizeof(cl_mem), &this->_input);
   clSetKernelArg(this->_kernel, 1, sizeof(cl_mem), &this->_samples);
-  clSetKernelArg(this->_kernel, 2, sizeof(cl_int), &samples);
+  clSetKernelArg(this->_kernel, 2, sizeof(samples), &samples);
   clSetKernelArg(this->_kernel, 3, sizeof(cl_mem), &this->_output);
 
   return this->_n_samples;

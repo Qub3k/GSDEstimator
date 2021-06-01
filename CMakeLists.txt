@@ -3,11 +3,18 @@ cmake_minimum_required(VERSION 3.0)
 include(ExternalProject)
 find_package(Git REQUIRED)
 
+set(TARGET_NAME GSDEstimator)
 set(OPENCL_INSTALL_DIR "opencl")
 
 include_directories(${CMAKE_SOURCE_DIR}/OpenCL-Headers ".")
 add_subdirectory(${CMAKE_SOURCE_DIR}/OpenCL-ICD-Loader)
 
-add_executable(GSDEstimator "main.cpp" "pal.cpp")
-target_compile_definitions(GSDEstimator PUBLIC -DDEBUG=1)
-target_link_libraries(GSDEstimator OpenCL)
+add_executable(${TARGET_NAME} "main.cpp" "pal.cpp")
+target_compile_definitions(${TARGET_NAME} PUBLIC -DDEBUG=1)
+target_link_libraries(${TARGET_NAME} OpenCL)
+
+if(MSVC)
+  target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
+else()
+  target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)
+endif()
