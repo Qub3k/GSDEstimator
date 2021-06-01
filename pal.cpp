@@ -33,7 +33,7 @@ const char* clErrorString(cl_int err);
 
 template<typename... Args>
 inline void clCheckError(cl_int err, const char* msg, Args... args) {
-  if ( err != CL_SUCCESS ) {
+  if (err != CL_SUCCESS) {
 #if DEBUG
     const char* error_string = clErrorString(err);
     fprintf(stderr, "Error: %d ( %s )\n", err, error_string);
@@ -54,15 +54,13 @@ int Context::init() {
   cl_uint num_of_devices=0;
 
   // retreives a list of platforms available
-  if (clGetPlatformIDs(1, &platform_id, &num_of_platforms)!= CL_SUCCESS)
-  {
+  if (clGetPlatformIDs(1, &platform_id, &num_of_platforms)!= CL_SUCCESS) {
       std::cerr << "Unable to get platform_id" << std::endl;
       return 1;
   }
 
   // try to get a supported GPU device
-  if (clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_GPU, 1, &this->_device_id, &num_of_devices) != CL_SUCCESS)
-  {
+  if (clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_GPU, 1, &this->_device_id, &num_of_devices) != CL_SUCCESS) {
       std::cerr << "Unable to get device_id" << std::endl;
       return 1;
   }
@@ -98,8 +96,7 @@ int Context::prepare_kernel() {
 
   // compile the program
   int ret;
-  if ( (ret = clBuildProgram(program, 0, NULL, NULL, NULL, NULL)) != CL_SUCCESS )
-  {
+  if ((ret = clBuildProgram(program, 0, NULL, NULL, NULL, NULL)) != CL_SUCCESS) {
     // Determine the size of the log
     size_t log_size;
     clGetProgramBuildInfo(program, this->_device_id, CL_PROGRAM_BUILD_LOG, 0, NULL, &log_size);
@@ -184,7 +181,7 @@ Context::~Context() {
 
 #if DEBUG
 const char* clErrorString(cl_int err) {
-  switch(err){
+  switch (err) {
     // run-time and JIT compiler errors
     case 0: return "CL_SUCCESS";
     case -1: return "CL_DEVICE_NOT_FOUND";
