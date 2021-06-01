@@ -2,7 +2,7 @@ name: Windows Workflow
 
 on:
   push:
-    branches: [ main, 1-create-build-action ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
