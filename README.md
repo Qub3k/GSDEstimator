@@ -26,10 +26,10 @@ Final executable named GSDEsimator will end up in build directory.
 ```
 mkdir build && cd build
 cmake ..
-msbuild GSDEstimator.sln
+msbuild GSDEstimator.sln /p:Configuration=Release
 ```
 
-Final executable named GSDEsimator will end up in build/Debug directory.
+Final executable named GSDEsimator will end up in build/Release directory.
 
 ## Usage
 
