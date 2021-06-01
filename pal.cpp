@@ -32,17 +32,23 @@ const char* clErrorString(cl_int err);
 #endif
 
 template<typename... Args>
-inline void clCheckError(cl_int err, const char* msg, Args... args) {
+static void clCheckError(cl_int err, const char* msg, Args... args) {
   if (err != CL_SUCCESS) {
 #if DEBUG
     const char* error_string = clErrorString(err);
     fprintf(stderr, "Error: %d ( %s )\n", err, error_string);
-    if constexpr(sizeof...(Args) > 0) {
-      fprintf(stderr, msg, args...);
-    } else {
-      fprintf(stderr, "%s", msg);
-    }
+    fprintf(stderr, msg, args...);
     fprintf(stderr, "\n");
+#endif
+    std::exit(err);
+  }
+}
+static void clCheckError(cl_int err, const char* msg) {
+  if (err != CL_SUCCESS) {
+#if DEBUG
+    const char* error_string = clErrorString(err);
+    fprintf(stderr, "Error: %d ( %s )\n", err, error_string);
+    fprintf(stderr, "%s\n", msg);
 #endif
     std::exit(err);
   }
