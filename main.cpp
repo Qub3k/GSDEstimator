@@ -97,7 +97,7 @@ int main(int argc, char** argv) {
 
   while (remaining_samples > 0) {
     size_t loaded = pal_context.setup_buffers(samples.data()+offset, remaining_samples, grid.data(), grid.size());
-    results.reserve(loaded*grid.size());
+    results.resize(loaded*grid.size());
 
     std::cerr << "Loaded: " << loaded << " samples. " << remaining_samples-loaded << " remining." << std::endl;
     std::cerr << "Setup buffers Succeded!" << std::endl;
