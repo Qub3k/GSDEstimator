@@ -3,33 +3,22 @@
 Estimator for [Generalized Score Distibution's](https://arxiv.org/abs/1909.04369) parameters using OpenCL for accelerating calculation on GPI.
 
 ## Build process
+In case of doubts refere to [wiki page](https://github.com/srokadev/GSDEstimator/wiki).
 
-### Linux
+### Requirements
+For windows you'll need Visual Studio Build Tools.
+For linux just these `g++` `make` `cmake` should be enough.
 
-#### Requirements
-`g++` `make` `cmake`
-
-```
-mkdir build && cd build
-cmake ..
-make
-```
-
-Final executable named GSDEsimator will end up in build directory.
-
-### Windows
-
-#### Requirements
-- Visual Studio Build Tools
-- Git
+### Command sequence
 
 ```
-mkdir build && cd build
-cmake ..
-msbuild GSDEstimator.sln /p:Configuration=Release
+mkdir build
+cmake -B build
+cmake --build build --config Release
 ```
 
-Final executable named GSDEsimator will end up in build/Release directory.
+For linux the final executable named GSDEsimator will end up in build directory.
+For windows you will find it in build/Release directory.
 
 ## Usage
 
