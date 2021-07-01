@@ -11,7 +11,7 @@ def generate_opencl_friendly_prob_grid(gsd_prob_grid_path: Path, subsample_size:
     into account whether the probability grid should should use the estimation correction (for the range of rho and
     psi).
 
-    TODO Do not generate a new binary file if the one for the current subsample size exists
+    TODO 2.1.1 Do not generate a new binary file if the one for the current subsample size exists
 
     :param gsd_prob_grid_path: filepath of the pickle file with GSD's probability grid
     :param subsample_size: the number of observations in each bootstrap sample
