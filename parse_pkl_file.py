@@ -19,11 +19,6 @@ def generate_opencl_friendly_prob_grid(gsd_prob_grid_path: Path, should_correct=
     full_prob_grid = pd.read_pickle(gsd_prob_grid_path)
     out_prob_grid = []
 
-    # it --- iterator
-    prob_grid_it = full_prob_grid.iterrows()
-    if should_correct:
-        prob_grid_it = zip(full_prob_grid.iterrows(), valid_psi_rho_pairs.iterrows())
-
     # Generate a probability grid understandable for the OpenCL-accelerated code
     # probs --- probabilities
     if not should_correct:
@@ -31,21 +26,22 @@ def generate_opencl_friendly_prob_grid(gsd_prob_grid_path: Path, should_correct=
             out_prob_grid.append(_psi)
             out_prob_grid.append(_rho)
             for _idx in range(1, 6):
-                out_array.append(row[_idx])
+                out_prob_grid.append(probs[_idx])
     else:
-        for (_psi, _rho), probs, (__psi, __rho), is_valid in \
+        for ((_psi, _rho), probs), ((__psi, __rho), is_valid) in \
                 zip(full_prob_grid.iterrows(), valid_psi_rho_pairs.iterrows()):
             assert _psi == __psi and _rho == __rho
-            if is_valid == 0:
+            assert len(is_valid) == 1
+            if not is_valid.all():  # using iloc[0] to convert series into a scalar
                 continue
             out_prob_grid.append(_psi)
             out_prob_grid.append(_rho)
             for _idx in range(1, 6):
-                out_array.append(row[_idx])
+                out_prob_grid.append(probs[_idx])
 
     # Store the output probability grid in a binary file
     with open(gsd_prob_grid_path.stem + ".bin", "wb") as _out_file:
-        _out_file.write(struct.pack('d' * len(out_array), *out_array))
+        _out_file.write(struct.pack('d' * len(out_prob_grid), *out_prob_grid))
 
     return
 
