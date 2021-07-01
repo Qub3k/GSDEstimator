@@ -4,13 +4,17 @@ import struct
 from pathlib import Path
 
 
-def generate_opencl_friendly_prob_grid(gsd_prob_grid_path: Path, should_correct=False, valid_psi_rho_pairs=None):
+def generate_opencl_friendly_prob_grid(gsd_prob_grid_path: Path, subsample_size: int, should_correct=False,
+                                       valid_psi_rho_pairs=None):
     """
     Generates a probability grid in the format understandable for the OpenCL-accelerated code. Furthermore, it takes
     into account whether the probability grid should should use the estimation correction (for the range of rho and
     psi).
 
+    TODO Do not generate a new binary file if the one for the current subsample size exists
+
     :param gsd_prob_grid_path: filepath of the pickle file with GSD's probability grid
+    :param subsample_size: the number of observations in each bootstrap sample
     :param should_correct: a flag indicating whether to use the estimation correction
     :param valid_psi_rho_pairs: pandas DataFrame indexed with (psi, rho) pairs. If for a given pair the value is 0, it
      should be excluded from the estimation process. If it is 1, it should be included.
@@ -40,7 +44,9 @@ def generate_opencl_friendly_prob_grid(gsd_prob_grid_path: Path, should_correct=
                 out_prob_grid.append(probs[_idx])
 
     # Store the output probability grid in a binary file
-    with open(gsd_prob_grid_path.stem + ".bin", "wb") as _out_file:
+    # Append to the filename the info about subsample size for which the probability grid was generated
+    output_filename = "_".join([gsd_prob_grid_path.stem, "n" + str(subsample_size)]) + ".bin"
+    with open(output_filename, "wb") as _out_file:
         _out_file.write(struct.pack('d' * len(out_prob_grid), *out_prob_grid))
 
     return
