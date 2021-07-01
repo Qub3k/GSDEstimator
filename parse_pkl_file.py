@@ -11,15 +11,24 @@ def generate_opencl_friendly_prob_grid(gsd_prob_grid_path: Path, subsample_size:
     into account whether the probability grid should should use the estimation correction (for the range of rho and
     psi).
 
-    TODO 2.1.1 Do not generate a new binary file if the one for the current subsample size exists
-
     :param gsd_prob_grid_path: filepath of the pickle file with GSD's probability grid
     :param subsample_size: the number of observations in each bootstrap sample
     :param should_correct: a flag indicating whether to use the estimation correction
     :param valid_psi_rho_pairs: pandas DataFrame indexed with (psi, rho) pairs. If for a given pair the value is 0, it
      should be excluded from the estimation process. If it is 1, it should be included.
-    :return: nothing yet
+    :return: filename of the binary file generated (the one with the probability grid)
     """
+    if not should_correct:
+        output_filename = gsd_prob_grid_path.stem + ".bin"
+    else:
+        # Append to the filename the info about subsample size for which the probability grid was generated
+        output_filename = "_".join([gsd_prob_grid_path.stem, "n" + str(subsample_size)]) + ".bin"
+
+    # Do not generate a new binary file if the one for the current subsample size exists
+    if Path(output_filename).exists():
+        print(f"The {output_filename} file already exists! Skipping its generation.")
+        return output_filename
+
     full_prob_grid = pd.read_pickle(gsd_prob_grid_path)
     out_prob_grid = []
 
@@ -44,12 +53,10 @@ def generate_opencl_friendly_prob_grid(gsd_prob_grid_path: Path, subsample_size:
                 out_prob_grid.append(probs[_idx])
 
     # Store the output probability grid in a binary file
-    # Append to the filename the info about subsample size for which the probability grid was generated
-    output_filename = "_".join([gsd_prob_grid_path.stem, "n" + str(subsample_size)]) + ".bin"
     with open(output_filename, "wb") as _out_file:
         _out_file.write(struct.pack('d' * len(out_prob_grid), *out_prob_grid))
 
-    return
+    return output_filename
 
 
 if __name__ == '__main__':
