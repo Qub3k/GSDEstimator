@@ -7,7 +7,9 @@ In case of doubts refere to [wiki page](https://github.com/srokadev/GSDEstimator
 
 ### Requirements
 For windows you'll need Visual Studio Build Tools.
-For linux just these `g++` `make` `cmake` should be enough.
+For linux and Mac OS X just these `g++` `make` `cmake` should be enough.
+
+**Note for Mac OS X users**: You can install `gcc` through [Homebrew](https://formulae.brew.sh/formula/gcc#default). (Confirmed to be working on MBP M1 2020 with gcc@11.1.0 and Mac OS 11.4 Big Sur.)
 
 ### Command sequence
 
@@ -16,6 +18,13 @@ mkdir build
 cmake -B build
 cmake --build build --config Release
 ```
+
+**Note for Mac OS X users**: `cmake` will, by default, use the AppleClang compiler. You need to manually instruct it to use the GCC compiler instead.
+To do so, prepend all calls to `cmake` with the following:
+```
+CC=/opt/homebrew/Cellar/gcc/11.1.0_1/bin/gcc-11 CXX=/opt/homebrew/Cellar/gcc/11.1.0_1/bin/g++-11
+```
+(Make sure to adapt the line above according to your GCC installation.)
 
 For linux the final executable named GSDEsimator will end up in build directory.
 For windows you will find it in build/Release directory.
