@@ -9,6 +9,8 @@ In case of doubts refere to [wiki page](https://github.com/srokadev/GSDEstimator
 For windows you'll need Visual Studio Build Tools.
 For linux and Mac OS X just these `g++` `make` `cmake` should be enough.
 
+**Note**: When cloning this repo, please make sure to add the `--recursive` flag to your Git call.
+
 **Note for Mac OS X users**: You can install `gcc` through [Homebrew](https://formulae.brew.sh/formula/gcc#default).
 
 **Note for M1 CPU users**: The code will not work on your machine. 😅
